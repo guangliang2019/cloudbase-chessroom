@@ -1,30 +1,53 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
   <router-view />
 </template>
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script lang="ts">
+import {
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  provide,
+  reactive,
+  ref,
+} from 'vue';
+import responsiveObserve, {
+  Breakpoint,
+  responsiveArray,
+} from '@/utils/responsive-observe';
+import { UIInjectionKey } from './context';
+import { getBreakpoint } from '@/utils/ui';
+const responsiveArrayReverse = responsiveArray.reverse();
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>
+export default defineComponent({
+  setup() {
+    // 订阅响应式观察者
+    const responsiveObserveToken = ref<string>('');
+    const breakpoint = ref<Breakpoint>(getBreakpoint(window.innerWidth));
+    onMounted(() => {
+      responsiveObserveToken.value = responsiveObserve.subscribe(
+        (screen, breakpointChecked) => {
+          if (breakpointChecked) {
+            let currentBreakpoint: Breakpoint = 'xs';
+            responsiveArrayReverse.forEach(
+              (item) =>
+                (currentBreakpoint = screen[item] ? item : currentBreakpoint),
+            );
+            breakpoint.value = currentBreakpoint;
+          }
+        },
+      );
+    });
+    onUnmounted(() => {
+      responsiveObserve.unsubscribe(responsiveObserveToken.value);
+    });
+    // 提供当前响应式断点
+    provide(
+      UIInjectionKey,
+      reactive({
+        breakpoint: breakpoint,
+      }),
+    );
+  },
+});
+</script>
