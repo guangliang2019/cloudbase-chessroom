@@ -8,15 +8,21 @@ import {
   Input,
   InputPassword,
   Link,
+  Message,
   TypographyParagraph,
   TypographyTitle,
 } from '@arco-design/web-vue';
-import { defineComponent, inject, reactive } from 'vue';
+import { defineComponent, inject, reactive, ref } from 'vue';
 import { over } from '@/utils/ui';
 import cloudbase from '@/utils/cloudbase';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   setup() {
+    // 路由
+    const router = useRouter();
+    const toLogin = () => router.push('/login');
+
     // 获取 UI 上下文
     const UIContext = inject(UIInjectionKey);
 
@@ -64,7 +70,9 @@ export default defineComponent({
     ];
 
     // 提交注册
+    const submiting = ref<boolean>(false);
     const handleSubmit = () => {
+      submiting.value = true;
       cloudbase
         .callFunction({
           name: 'user-C',
@@ -73,7 +81,15 @@ export default defineComponent({
             password: form.password,
           },
         })
-        .then((res) => console.log(res));
+        .then((res) => {
+          submiting.value = false;
+          if (!res.result.err_code) {
+            Message.success('注册成功, 3s内将跳转至登录');
+            setTimeout(() => {
+              toLogin();
+            }, 3000);
+          }
+        });
     };
     return () => (
       <div class="chessroom-login-root">
@@ -94,7 +110,7 @@ export default defineComponent({
               labelColProps={{ span: 0 }}
               wrapperColProps={{ span: 24 }}
               model={form}
-              onSubmit={handleSubmit}
+              onSubmitSuccess={handleSubmit}
             >
               <FormItem field="userName" rules={userNameRules}>
                 <Input
@@ -131,7 +147,13 @@ export default defineComponent({
                 ></InputPassword>
               </FormItem>
               <FormItem style={{ marginTop: '16px' }} field="password">
-                <Button htmlType="submit" size="large" long type="primary">
+                <Button
+                  loading={submiting.value}
+                  htmlType="submit"
+                  size="large"
+                  long
+                  type="primary"
+                >
                   注册
                 </Button>
               </FormItem>
@@ -143,7 +165,7 @@ export default defineComponent({
                 justifyContent: 'space-between',
               }}
             >
-              <Link href="/login">返回登录</Link>
+              <Link onClick={toLogin}>返回登录</Link>
             </div>
             <div
               class="chessroom-login-right-box-jacker"

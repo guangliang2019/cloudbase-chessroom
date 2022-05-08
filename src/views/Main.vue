@@ -7,6 +7,7 @@ import {
   LayoutHeader,
 } from '@arco-design/web-vue';
 import { defineComponent } from 'vue';
+import { RouterView } from 'vue-router';
 import Header from '../components/Header.vue';
 
 export default defineComponent({
@@ -15,32 +16,37 @@ export default defineComponent({
   },
   setup() {
     return () => (
-      <>
-        <Layout>
-          <LayoutHeader class="chessroom-header-box">
-            <Header></Header>
-          </LayoutHeader>
-          <LayoutContent>
-            <h1>這是正文區域</h1>
-            <Button>123</Button>
-          </LayoutContent>
-        </Layout>
-      </>
+      <Layout class="chessroom-root">
+        <LayoutHeader class="chessroom-header-box">
+          <Header></Header>
+        </LayoutHeader>
+        <LayoutContent class="chessroom-content">
+          <RouterView></RouterView>
+        </LayoutContent>
+      </Layout>
     );
   },
 });
 </script>
 <style lang="less">
 .chessroom {
+  &-root {
+    height: 100vh;
+  }
   &-header {
     &-box {
       width: 100vw;
-      border-bottom: 1px solid var(--color-border-1);
-      box-shadow: 0px 4px 36px -8px rgba(#000, 0.08);
+      border-bottom: 1px solid var(--color-border-2);
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 1000;
     }
+  }
+  &-content {
+    max-height: calc(100vh - 53px);
+    background-color: var(--color-fill-1);
+    z-index: 1;
   }
 }
 </style>

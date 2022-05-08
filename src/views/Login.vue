@@ -2,26 +2,72 @@
 import { UIContext, UIInjectionKey } from '@/context';
 import {
   Button,
+  FieldRule,
   Form,
   FormItem,
   Input,
   InputPassword,
   Link,
+  Message,
   TypographyParagraph,
   TypographyTitle,
 } from '@arco-design/web-vue';
-import { defineComponent, inject, reactive } from 'vue';
+import { defineComponent, inject, reactive, ref } from 'vue';
 import { over } from '@/utils/ui';
+import cloudbase from '@/utils/cloudbase';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   setup() {
+    const store = useStore();
+
+    // 路由
+    const router = useRouter();
+    const toRegister = () => router.push('/register');
+    const toHome = () => router.push('/');
+
+    //表单数据与校验规则
     const form = reactive({
-      name: '',
+      userName: '',
       password: '',
-      visable: false,
     });
+    const userNameRules: FieldRule[] = [
+      { required: true, message: '用户名是必填项' },
+    ];
+    const passwordRules: FieldRule[] = [
+      { required: true, message: '密码是必填项' },
+    ];
+
+    // 登录
+    const submiting = ref<boolean>(false);
+    const handleSubmit = () => {
+      submiting.value = true;
+      cloudbase
+        .callFunction({
+          name: 'login',
+          data: {
+            userName: form.userName,
+            password: form.password,
+          },
+        })
+        .then((res) => {
+          submiting.value = false;
+          if (!res.result.err_code) {
+            store.commit('login', {
+              userName: form.userName,
+              token: res.result.token,
+            });
+            toHome();
+          } else {
+            Message.error('用户名或密码错误');
+          }
+        });
+    };
+
     // 获取 UI 上下文
     const UIContext = inject(UIInjectionKey);
+
     return () => (
       <div class="chessroom-login-root">
         <div
@@ -41,18 +87,19 @@ export default defineComponent({
               labelColProps={{ span: 0 }}
               wrapperColProps={{ span: 24 }}
               model={form}
+              onSubmitSuccess={handleSubmit}
             >
-              <FormItem field="userName">
+              <FormItem field="userName" rules={userNameRules}>
                 <Input
                   size="large"
-                  modelValue={form.name}
+                  modelValue={form.userName}
                   placeholder="用户名"
                   onInput={(args: string) => {
-                    form.name = args;
+                    form.userName = args;
                   }}
                 ></Input>
               </FormItem>
-              <FormItem field="password">
+              <FormItem field="password" rules={passwordRules}>
                 <InputPassword
                   // @ts-ignore
                   // arco 的 mixin 真是让人血压飙升
@@ -65,7 +112,13 @@ export default defineComponent({
                 ></InputPassword>
               </FormItem>
               <FormItem style={{ marginTop: '16px' }} field="password">
-                <Button size="large" long type="primary">
+                <Button
+                  loading={submiting.value}
+                  htmlType="submit"
+                  size="large"
+                  long
+                  type="primary"
+                >
                   登录
                 </Button>
               </FormItem>
@@ -77,7 +130,7 @@ export default defineComponent({
                 justifyContent: 'space-between',
               }}
             >
-              <Link href="/register">没有账号？去注册！</Link>
+              <Link onClick={toRegister}>没有账号？去注册！</Link>
               <Link>找回密码</Link>
             </div>
             <div

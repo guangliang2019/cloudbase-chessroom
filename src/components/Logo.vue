@@ -1,10 +1,11 @@
 <template>
   <svg
-    width="165"
-    height="48"
+    @click="handleClick"
+    height="40"
     viewBox="0 0 165 48"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    class="chessroom-logo"
   >
     <path
       d="M9.32715 15.7027L16.2489 19.699V28.7848L23.7431 33.104L23.7431 41.1013L9.32715 32.6979L9.32715 15.7027Z"
@@ -68,9 +69,8 @@ export default defineComponent({
   name: 'Logo',
   setup() {
     const router = useRouter();
-    const handleClick = () => {
-      router.push('/');
-    };
+    const handleClick = () => router.push('/');
+
     return {
       handleClick,
     };
@@ -79,7 +79,7 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-.logo {
+.chessroom-logo {
   cursor: pointer;
 }
 </style>
