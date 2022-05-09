@@ -49,4 +49,9 @@ export default defineComponent({
     z-index: 1;
   }
 }
+[arco-theme='dark'] {
+  .chessroom-content {
+    background-color: var(--color-bg-1);
+  }
+}
 </style>

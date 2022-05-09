@@ -11,7 +11,6 @@ export default defineComponent({
   setup() {
     const loading = ref<boolean>(true);
     const chatList = ref<Chat[]>([]);
-
     const store = useStore();
     // 长链接加载好友列表
     if (store.state.user.userName) {
@@ -31,8 +30,8 @@ export default defineComponent({
             new: 0,
           };
         });
+        store.state.message.roomId = chatList.value[0].roomId;
         loading.value = false;
-        console.log(args);
       });
     }
 
@@ -52,7 +51,9 @@ export default defineComponent({
           >
             {loading.value
               ? '加载中'
-              : chatList.value.map((item) => <ChatListItem {...item} />)}
+              : chatList.value.map((item) => (
+                  <ChatListItem key={item.userName} {...item} />
+                ))}
           </Menu>
         </LayoutSider>
         <LayoutContent>

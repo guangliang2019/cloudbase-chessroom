@@ -12,8 +12,8 @@ const fetch = (funcName: string, data: any) => {
       },
     })
     .then((res) => {
-      if (!res.result.err_code) {
-        console.log(res.result.err_code);
+      if (res.result.err_code) {
+        console.log(res.result);
       }
       return res.result;
     });

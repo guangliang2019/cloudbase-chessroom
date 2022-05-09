@@ -17,10 +17,14 @@ import responsiveObserve, {
 } from '@/utils/responsive-observe';
 import { UIInjectionKey } from './context';
 import { getBreakpoint } from '@/utils/ui';
+import { useStore } from 'vuex';
 const responsiveArrayReverse = responsiveArray.reverse();
 
 export default defineComponent({
   setup() {
+    const store = useStore();
+    document.body.setAttribute('arco-theme', store.state.ui.theme);
+
     // 订阅响应式观察者
     const responsiveObserveToken = ref<string>('');
     const breakpoint = ref<Breakpoint>(getBreakpoint(window.innerWidth));
@@ -51,3 +55,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="less">
+* {
+  transition: 340ms background-color ease-in-out, 340ms border ease-in-out;
+}
+</style>

@@ -10,6 +10,9 @@ export default createStore({
     message: {
       roomId: undefined,
     },
+    ui: {
+      theme: localStorage.getItem('theme'),
+    },
   },
   mutations: {
     login(state, payload: UserState) {
@@ -26,6 +29,17 @@ export default createStore({
     },
     changeChatRoom(state, payload) {
       state.message.roomId = payload.roomId;
+    },
+    changeTheme(state) {
+      if (state.ui.theme === 'dark') {
+        state.ui.theme = 'light';
+        localStorage.setItem('theme', 'light');
+        document.body.setAttribute('arco-theme', 'light');
+      } else {
+        state.ui.theme = 'dark';
+        localStorage.setItem('theme', 'dark');
+        document.body.setAttribute('arco-theme', 'dark');
+      }
     },
   },
   actions: {},

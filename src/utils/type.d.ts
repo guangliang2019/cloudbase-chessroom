@@ -1,7 +1,8 @@
 export interface Message {
   userName: string;
   content: string;
-  createdAt?: string;
+  createdAt: string;
+  readAt: string;
 }
 
 export interface Chat {

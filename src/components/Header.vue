@@ -1,9 +1,15 @@
 <script lang="tsx">
+import fetch from '@/utils/fetch';
 import {
   Badge,
   Button,
+  Form,
+  FormItem,
+  Input,
   Menu,
   MenuItem,
+  Message,
+  Modal,
   Space,
   Trigger,
 } from '@arco-design/web-vue';
@@ -12,10 +18,13 @@ import {
   IconExport,
   IconFile,
   IconImport,
+  IconMoon,
   IconStar,
+  IconSun,
   IconUser,
+  IconUserAdd,
 } from '@arco-design/web-vue/es/icon';
-import { defineComponent } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import Logo from './Logo.vue';
@@ -31,11 +40,32 @@ export default defineComponent({
     const router = useRouter();
     const toMessage = () => router.push('/message');
     const toLogin = () => router.push('/login');
+
+    // 添加好友
+    const addingFriend = ref<boolean>(false);
+    const addFriendForm = reactive({
+      userName: '',
+    });
     return () => (
       <div class="chessroom-header">
         <Logo />
         <div>
           <Space size="small">
+            <Button
+              onClick={() => {
+                store.commit('changeTheme');
+              }}
+              type="text"
+            >
+              {{
+                icon: () =>
+                  store.state.ui.theme === 'dark' ? (
+                    <IconSun class="chessroom-icon" size="20" />
+                  ) : (
+                    <IconMoon class="chessroom-icon" size="20" />
+                  ),
+              }}
+            </Button>
             <Button onClick={toMessage} type="text">
               {{
                 icon: () => (
@@ -64,6 +94,16 @@ export default defineComponent({
                           {{
                             icon: <IconFile size="18" />,
                             default: '个人信息',
+                          }}
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            addingFriend.value = true;
+                          }}
+                        >
+                          {{
+                            icon: <IconUserAdd size="18" />,
+                            default: '添加好友',
                           }}
                         </MenuItem>
                         <MenuItem
@@ -111,6 +151,42 @@ export default defineComponent({
             </Trigger>
           </Space>
         </div>
+        {/*添加好友的模态框部分*/}
+        <Modal
+          onCancel={() => (addingFriend.value = false)}
+          onClose={() => (addingFriend.value = false)}
+          onBeforeOk={(done) => {
+            if (!addFriendForm.userName) return;
+            fetch('chat-C', {
+              userName: store.state.user.userName,
+              anotherName: addFriendForm.userName,
+            }).then((res) => {
+              if (!res.err_code) {
+                done(true);
+                addingFriend.value = false;
+                Message.success('添加好友成功');
+              }
+            });
+          }}
+          title="添加好友"
+          visible={addingFriend.value}
+        >
+          <Form
+            labelColProps={{ span: 0 }}
+            wrapperColProps={{ span: 24 }}
+            model={addFriendForm}
+          >
+            <FormItem field="userName">
+              <Input
+                placeholder="好友的用户名"
+                modelValue={addFriendForm.userName}
+                onInput={(args: any) => {
+                  addFriendForm.userName = args;
+                }}
+              />
+            </FormItem>
+          </Form>
+        </Modal>
       </div>
     );
   },
@@ -127,8 +203,9 @@ export default defineComponent({
 
 .chessroom-header {
   width: 100%;
-  //max-width: 1440px;
   height: 52px;
+  color: var(--color-text-1);
+  background-color: var(--color-bg-3);
   padding: 0 8px;
   display: flex;
   flex-direction: row;

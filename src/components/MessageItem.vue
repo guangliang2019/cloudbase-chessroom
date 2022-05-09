@@ -7,11 +7,24 @@ import { useStore } from 'vuex';
 export default defineComponent({
   name: 'MessageItem',
   props: {
-    message: { type: Object as PropType<Message>, required: true },
+    userName: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    createdAt: {
+      type: String,
+    },
+    readAt: {
+      type: String,
+    },
   },
   setup(props) {
     const store = useStore();
-    const isSelf = store.state.user.userName === props.message.userName;
+    const isSelf = store.state.user.userName === props.userName;
 
     return () => (
       <div
@@ -19,21 +32,21 @@ export default defineComponent({
         class="chessroom-message-item-root"
       >
         <Avatar class="chessroom-message-item-avatar" size={30}>
-          {props.message.userName[0]}
+          {props.userName[0]}
         </Avatar>
         <div class="chessroom-message-item-right">
           <div
             style={{ textAlign: isSelf ? 'right' : 'left' }}
             class="chessroom-message-item-right-username"
           >
-            {props.message.userName}
+            {props.userName}
           </div>
           <div
             class={`chessroom-message-item-right-content${
               isSelf ? '-self' : ''
             }`}
           >
-            {props.message.content}
+            {props.content}
           </div>
         </div>
       </div>
