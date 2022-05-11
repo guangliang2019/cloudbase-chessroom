@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import Main from '../views/Main.vue';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
@@ -47,10 +47,14 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Register',
     component: Register,
   },
+  {
+    path: '/*',
+    components: Login,
+  },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(process.env.BASE_URL),
   routes,
 });
 
