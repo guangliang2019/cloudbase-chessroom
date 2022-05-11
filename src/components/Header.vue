@@ -92,8 +92,8 @@ export default defineComponent({
                         </MenuItem>
                         <MenuItem>
                           {{
-                            icon: <IconFile size="18" />,
-                            default: '个人信息',
+                            icon: () => <IconFile size="18" />,
+                            default: () => '个人信息',
                           }}
                         </MenuItem>
                         <MenuItem
@@ -102,8 +102,8 @@ export default defineComponent({
                           }}
                         >
                           {{
-                            icon: <IconUserAdd size="18" />,
-                            default: '添加好友',
+                            icon: () => <IconUserAdd size="18" />,
+                            default: () => '添加好友',
                           }}
                         </MenuItem>
                         <MenuItem
@@ -113,8 +113,8 @@ export default defineComponent({
                           }}
                         >
                           {{
-                            icon: <IconExport size="18" />,
-                            default: '退出登录',
+                            icon: () => <IconExport size="18" />,
+                            default: () => '退出登录',
                           }}
                         </MenuItem>
                       </Menu>
@@ -128,8 +128,8 @@ export default defineComponent({
                           }}
                         >
                           {{
-                            icon: <IconImport size="18" />,
-                            default: '登录注册',
+                            icon: () => <IconImport size="18" />,
+                            default: () => '登录注册',
                           }}
                         </MenuItem>
                       </Menu>

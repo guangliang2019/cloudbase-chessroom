@@ -21,3 +21,7 @@ export enum ResponsiveBrekpoint {
 export const over = (curr: Breakpoint, target: Breakpoint): boolean => {
   return ResponsiveBrekpoint[curr] > ResponsiveBrekpoint[target];
 };
+
+export const below = (curr: Breakpoint, target: Breakpoint): boolean => {
+  return ResponsiveBrekpoint[curr] < ResponsiveBrekpoint[target];
+};

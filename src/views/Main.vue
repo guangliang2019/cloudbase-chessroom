@@ -1,11 +1,5 @@
 <script lang="tsx">
-// import router from '@/router';
-import {
-  Button,
-  Layout,
-  LayoutContent,
-  LayoutHeader,
-} from '@arco-design/web-vue';
+import { Layout, LayoutContent, LayoutHeader } from '@arco-design/web-vue';
 import { defineComponent } from 'vue';
 import { RouterView } from 'vue-router';
 import Header from '../components/Header.vue';

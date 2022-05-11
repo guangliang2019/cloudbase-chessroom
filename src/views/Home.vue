@@ -3,17 +3,27 @@ import LogoVue from '@/components/Logo.vue';
 import PolishingCardVue from '@/components/PolishingCard.vue';
 import { Col, Row } from '@arco-design/web-vue';
 import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+interface gameInfo {
+  gameName: string;
+  path: string;
+}
 
 export default defineComponent({
   setup() {
-    const gameList = ref<string[]>(['五子棋']);
+    const gameList = ref<gameInfo[]>([
+      { gameName: '五子棋', path: '/game/gomuku' },
+    ]);
     for (let i = 0; i < 19; i++) {
-      gameList.value.push('待定游戏');
+      gameList.value.push({ gameName: '待定游戏', path: '/game' });
     }
+
+    const router = useRouter();
     return () => (
       <div class="chessroom-home-root">
         <Row class="chessroom-home-row">
-          {gameList.value.map((item) => (
+          {gameList.value.map((item: gameInfo) => (
             <Col
               xs={{ span: 12 }}
               sm={{ span: 8 }}
@@ -21,8 +31,11 @@ export default defineComponent({
               class="chessroom-home-col"
             >
               <PolishingCardVue>
-                <div class="chessroom-home-card">
-                  <div class="chessroom-home-card-text">{item}</div>
+                <div
+                  onClick={() => router.push(item.path)}
+                  class="chessroom-home-card"
+                >
+                  <div class="chessroom-home-card-text">{item.gameName}</div>
                   <LogoVue />
                 </div>
               </PolishingCardVue>

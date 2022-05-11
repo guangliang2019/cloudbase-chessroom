@@ -4,6 +4,8 @@ import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import Home from '../views/Home.vue';
 import Message from '../views/Message.vue';
+import Game from '../views/Game.vue';
+import Gomuku from '../components/games/gomuku/index';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -20,6 +22,18 @@ const routes: Array<RouteRecordRaw> = [
         path: '/message',
         name: 'Message',
         component: Message,
+      },
+      {
+        path: '/game',
+        name: 'Game',
+        component: Game,
+        children: [
+          {
+            path: '/game/gomuku',
+            name: 'Gomuku',
+            component: Gomuku,
+          },
+        ],
       },
     ],
   },

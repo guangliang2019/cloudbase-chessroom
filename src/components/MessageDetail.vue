@@ -21,7 +21,6 @@ export default defineComponent({
   name: 'MessageDetail',
 
   setup() {
-    const layoutContentRef = ref();
     const store = useStore();
     const roomId = ref<string>(store.state.message.roomId);
     const form = reactive({
@@ -57,9 +56,7 @@ export default defineComponent({
       fetchMessageList();
       if (!socket.hasListeners(roomId.value + '-update')) {
         if (!roomId.value) return;
-        console.log('add + ' + roomId.value);
         socket.on(roomId.value + '-update', () => {
-          console.log('shouldUpdate ' + roomId.value);
           fetchMessageList();
         });
       }
@@ -82,7 +79,6 @@ export default defineComponent({
         if (res.err_code) {
           Tip.error('刚刚那条遇到问题了其实没发出去，建议刷新页面重试');
         } else {
-          console.log(store.state.user.userName + '-send');
           socket.emit(store.state.user.userName + '-send', {
             roomId: store.state.message.roomId,
           });
